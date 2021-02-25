@@ -1,22 +1,8 @@
-const db = require('./db');
-const { ObjectID } = require('mongodb');
-
-const getCollection = async (db, name) => {
-  const client = await db;
-  const collection = await client.db().collection(name);
-
-  return collection;
-};
+const Contact = require('./schemas/contact-schema');
 
 const addContact = async (body) => {
   try {
-    const newContact = {
-      ...body,
-    };
-    const collection = await getCollection(db, 'contacts');
-    const {
-      ops: [result],
-    } = await collection.insertOne(newContact);
+    const result = await Contact.create(body);
     return result;
   } catch (error) {
     console.log(error);
@@ -25,8 +11,7 @@ const addContact = async (body) => {
 
 const listContacts = async () => {
   try {
-    const collection = await getCollection(db, 'contacts');
-    const results = await collection.find({}).toArray();
+    const results = await Contact.find({});
     return results;
   } catch (error) {
     console.log(error);
@@ -35,9 +20,7 @@ const listContacts = async () => {
 
 const getContactById = async (contactId) => {
   try {
-    const objectId = new ObjectID(contactId);
-    const collection = await getCollection(db, 'contacts');
-    const [result] = await collection.find({ _id: objectId }).toArray();
+    const [result] = await Contact.find({ _id: contactId });
     return result;
   } catch (error) {
     console.log(error);
@@ -46,12 +29,10 @@ const getContactById = async (contactId) => {
 
 const updateContact = async (contactId, body) => {
   try {
-    const objectId = new ObjectID(contactId);
-    const collection = await getCollection(db, 'contacts');
-    const { value: result } = await collection.findOneAndUpdate(
-      { _id: objectId },
-      { $set: body },
-      { returnOriginal: false }
+    const result = await Contact.findByIdAndUpdate(
+      { _id: contactId },
+      { ...body },
+      { new: true }
     );
     return result;
   } catch (error) {
@@ -61,9 +42,7 @@ const updateContact = async (contactId, body) => {
 
 const removeContact = async (contactId) => {
   try {
-    const objectId = new ObjectID(contactId);
-    const collection = await getCollection(db, 'contacts');
-    const result = await collection.findOneAndDelete({ _id: objectId });
+    const result = await Contact.findByIdAndRemove({ _id: contactId });
     return result;
   } catch (error) {
     console.log(error);
