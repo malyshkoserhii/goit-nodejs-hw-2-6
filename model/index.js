@@ -20,7 +20,7 @@ const listContacts = async () => {
 
 const getContactById = async (contactId) => {
   try {
-    const [result] = await Contact.find({ _id: contactId });
+    const result = await Contact.findById(contactId);
     return result;
   } catch (error) {
     console.log(error);
@@ -30,7 +30,7 @@ const getContactById = async (contactId) => {
 const updateContact = async (contactId, body) => {
   try {
     const result = await Contact.findByIdAndUpdate(
-      { _id: contactId },
+      contactId,
       { ...body },
       { new: true }
     );

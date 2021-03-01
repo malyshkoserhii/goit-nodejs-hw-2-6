@@ -10,7 +10,7 @@ const db = mongoose.connect(uriDb, {
 });
 
 mongoose.connection.on('connected', () => {
-  console.log('Moongose connection to the Data base');
+  console.log('Database connection successful');
 });
 
 mongoose.connection.on('error', (error) => {
@@ -23,7 +23,7 @@ mongoose.connection.on('disconnected', () => {
 
 process.on('SIGINT', async () => {
   await mongoose.connection.close();
-  console.log('Connection for the Data base closed and app termination');
+  console.log('Connection for the Database has been closed');
   process.exit(1);
 });
 
