@@ -1,7 +1,9 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 const schemaCreateUser = Joi.object({
-  name: Joi.string().alphanum().min(3).max(30).required(),
+  id: Joi.objectId(),
+  name: Joi.string().min(3).max(30).required(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
@@ -11,7 +13,12 @@ const schemaCreateUser = Joi.object({
   phone: Joi.string().required(),
 });
 
+const schemaGetById = Joi.object({
+  id: Joi.objectId(),
+});
+
 const schemaUpdateUser = Joi.object({
+  id: Joi.objectId(),
   name: Joi.string().alphanum().min(3).max(30).optional(),
   email: Joi.string()
     .email({
@@ -21,6 +28,10 @@ const schemaUpdateUser = Joi.object({
     .optional(),
   phone: Joi.string().optional(),
 }).min(1);
+
+const schemaDelete = Joi.object({
+  id: Joi.objectId(),
+});
 
 const validate = (schema, obj, next) => {
   const { error } = schema.validate(obj);
@@ -38,11 +49,21 @@ const createUserValidation = (req, res, next) => {
   return validate(schemaCreateUser, req.body, next);
 };
 
+const getByIdUserValidation = (req, res, next) => {
+  return validate(schemaGetById, req.body, next);
+};
+
 const updateUserValidation = (req, res, next) => {
   return validate(schemaUpdateUser, req.body, next);
 };
 
+const removeUserValidation = (req, res, next) => {
+  return validate(schemaDelete, req.body, next);
+};
+
 module.exports = {
   createUserValidation,
+  getByIdUserValidation,
   updateUserValidation,
+  removeUserValidation,
 };
