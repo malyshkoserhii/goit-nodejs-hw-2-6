@@ -6,14 +6,14 @@ const {
 } = require('../../helpers/constants');
 require('dotenv').config();
 
-const SALT = process.env.SALT;
+const BCRYPT_SALT = Number(process.env.SALT);
 
 const userSchema = new Schema(
   {
     email: {
       type: String,
       required: [true, 'Email is required! Please enter your email'],
-      minlenght: 5,
+      minlength: 5,
       unique: true,
       validate: {
         validator(value) {
@@ -25,7 +25,7 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: [true, 'Password is required! Please enter your password'],
-      minlenght: 5,
+      minlength: 5,
     },
     subscription: {
       type: String,
@@ -41,8 +41,8 @@ userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
-  const salt = await bcrypt.genSaltSync(SALT);
-  this.password = await bcrypt.hash(this.password, salt, null);
+  const salt = await bcrypt.genSalt(BCRYPT_SALT);
+  this.password = bcrypt.hash(this.password, salt, null);
   next();
 });
 
