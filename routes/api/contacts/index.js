@@ -12,7 +12,7 @@ const {
   getContactByIdController,
   updateContactController,
   removeContactController,
-} = require('../../controllers/contacts-controller');
+} = require('../../../controllers/contacts-controller');
 
 router.post('/', createUserValidation, addContactController);
 
