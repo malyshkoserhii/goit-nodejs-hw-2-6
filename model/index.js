@@ -9,40 +9,58 @@ const addContact = async (body) => {
   }
 };
 
-const listContacts = async () => {
+const listContacts = async (userId) => {
   try {
-    const results = await Contact.find({});
+    const results = await Contact.find({ owner: userId }).populate({
+      path: 'owner',
+      select: 'email subscription',
+    });
     return results;
   } catch (error) {
     console.log(error);
   }
 };
 
-const getContactById = async (contactId) => {
+const getContactById = async (contactId, userId) => {
   try {
-    const result = await Contact.findById(contactId);
+    const result = await Contact.findById({
+      _id: contactId,
+      owner: userId,
+    }).populate({
+      path: 'owner',
+      select: 'email subscription',
+    });
     return result;
   } catch (error) {
     console.log(error);
   }
 };
 
-const updateContact = async (contactId, body) => {
+const updateContact = async (contactId, body, userId) => {
   try {
     const result = await Contact.findByIdAndUpdate(
-      contactId,
+      { _id: contactId, owner: userId },
       { ...body },
       { new: true }
-    );
+    ).populate({
+      path: 'owner',
+      select: 'email subscription',
+    });
     return result;
   } catch (error) {
     console.log(error);
   }
 };
 
-const removeContact = async (contactId) => {
+const removeContact = async (contactId, userId) => {
   try {
-    const result = await Contact.findByIdAndRemove({ _id: contactId });
+    const result = await Contact.findByIdAndRemove({
+      _id: contactId,
+      owner: userId,
+    }).populate({
+      path: 'owner',
+      select: 'email subscription',
+    });
     return result;
   } catch (error) {
     console.log(error);
