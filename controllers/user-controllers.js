@@ -61,7 +61,23 @@ const userLoginController = async (req, res, next) => {
   }
 };
 
+const userLogoutController = async (req, res, next) => {
+  const id = req.user.id;
+  // const user = await Users.findUserById(userId);
+  await Users.updateToken(id, null);
+
+  // if (!user) {
+  //   return res
+  //     .status(HttpCode.UNAUTHORIZED)
+  //     .type('application/json')
+  //     .json({ message: 'Not authorized' });
+  // }
+
+  return res.status(HttpCode.NO_CONTENT);
+};
+
 module.exports = {
   userRegistrationController,
   userLoginController,
+  userLogoutController,
 };

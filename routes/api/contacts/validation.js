@@ -7,7 +7,7 @@ const schemaCreateUser = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] },
+      tlds: { allow: ['com', 'net', 'ua'] },
     })
     .optional(),
   phone: Joi.string().required(),
