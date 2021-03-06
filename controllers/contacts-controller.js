@@ -19,8 +19,8 @@ const addContactController = async (req, res, next) => {
 const getAllContactsController = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const contacts = await Contact.listContacts(userId);
-    return res.status(HttpCode.OK).json({ contacts });
+    const contacts = await Contact.listContacts(userId, req.query);
+    return res.status(HttpCode.OK).json({ ...contacts });
   } catch (error) {
     next(error);
   }

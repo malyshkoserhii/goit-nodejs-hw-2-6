@@ -9,13 +9,33 @@ const addContact = async (body) => {
   }
 };
 
-const listContacts = async (userId) => {
+const listContacts = async (userId, { page = '1', limit = '5' }) => {
   try {
-    const results = await Contact.find({ owner: userId }).populate({
-      path: 'owner',
-      select: 'email subscription',
-    });
-    return results;
+    const results = await Contact.paginate(
+      { owner: userId },
+      {
+        page,
+        limit,
+        populate: {
+          path: 'owner',
+          select: 'email subscription',
+        },
+      }
+    );
+    const {
+      docs: contacts,
+      totalDocs: total,
+      page: pageNumber,
+      totalPages: allPages,
+    } = results;
+    return {
+      total: total.toString(),
+      limit,
+      totalPages: allPages.toString(),
+      page: pageNumber.toString(),
+      contacts,
+    };
+    // return results;
   } catch (error) {
     console.log(error);
   }
