@@ -42,8 +42,9 @@ const userLoginController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await Users.findByEmail(email);
+    const isValidPassword = await user.validPassword(password);
 
-    if (!user || !user.validPassword(password)) {
+    if (!user || !isValidPassword) {
       return res
         .status(HttpCode.UNAUTHORIZED)
         .type('application/json')
