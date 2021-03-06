@@ -1,4 +1,4 @@
-const Contact = require('../model');
+const Contact = require('../model/contacts-model');
 const { HttpCode } = require('../helpers/constants');
 
 const addContactController = async (req, res, next) => {
