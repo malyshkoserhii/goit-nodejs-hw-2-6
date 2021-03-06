@@ -11,9 +11,13 @@ const {
   userLoginValidation,
   userLogoutValidation,
 } = require('./validation');
+const {
+  userRegistrationLimiter,
+} = require('../../../helpers/registration-limit');
 
 router.post(
   '/auth/register',
+  userRegistrationLimiter,
   userRegistrationValidation,
   userRegistrationController
 );
