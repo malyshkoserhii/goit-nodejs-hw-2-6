@@ -29,6 +29,10 @@ const schemaUserLogout = Joi.object({
   id: Joi.objectId(),
 });
 
+const schemaCurrentUserChecking = Joi.object({
+  token: Joi.string().required(),
+});
+
 const validate = (schema, obj, next) => {
   const { error } = schema.validate(obj);
   if (error) {
@@ -53,8 +57,13 @@ const userLogoutValidation = (req, res, next) => {
   return validate(schemaUserLogout, req.body, next);
 };
 
+const currentUserCheckingValidation = (req, res, next) => {
+  return validate(schemaCurrentUserChecking, req.body, next);
+};
+
 module.exports = {
   userRegistrationValidation,
   userLoginValidation,
   userLogoutValidation,
+  currentUserCheckingValidation,
 };

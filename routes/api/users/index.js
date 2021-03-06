@@ -11,6 +11,7 @@ const {
   userRegistrationValidation,
   userLoginValidation,
   userLogoutValidation,
+  currentUserCheckingValidation,
 } = require('./validation');
 const {
   userRegistrationLimiter,
@@ -27,6 +28,10 @@ router.post('/auth/login', userLoginValidation, userLoginController);
 
 router.post('/auth/logout', guard, userLogoutValidation, userLogoutController);
 
-router.get('/current', checkUserByTokenController);
+router.get(
+  '/current',
+  currentUserCheckingValidation,
+  checkUserByTokenController
+);
 
 module.exports = router;
