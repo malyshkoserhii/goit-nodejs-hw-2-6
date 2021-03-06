@@ -35,7 +35,6 @@ const listContacts = async (userId, { page = '1', limit = '5' }) => {
       page: pageNumber.toString(),
       contacts,
     };
-    // return results;
   } catch (error) {
     console.log(error);
   }

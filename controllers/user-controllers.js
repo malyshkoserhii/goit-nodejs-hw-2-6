@@ -76,8 +76,31 @@ const userLogoutController = async (req, res, next) => {
   return res.status(HttpCode.NO_CONTENT).json({});
 };
 
+const checkUserByTokenController = async (req, res, next) => {
+  try {
+    const { token } = await req.body;
+    const user = await Users.checkUserByToken(token);
+    console.log('user', user);
+
+    if (!user) {
+      return res
+        .status(HttpCode.UNAUTHORIZED)
+        .type('application/json')
+        .json({ message: 'Not authorized' });
+    }
+
+    return res
+      .status(HttpCode.OK)
+      .type('application/json')
+      .json({ email: user.email, subscription: user.subscription });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   userRegistrationController,
   userLoginController,
   userLogoutController,
+  checkUserByTokenController,
 };
