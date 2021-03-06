@@ -19,11 +19,11 @@ const schemaGetById = Joi.object({
 
 const schemaUpdateUser = Joi.object({
   id: Joi.objectId(),
-  name: Joi.string().alphanum().min(3).max(30).optional(),
+  name: Joi.string().min(3).max(30).optional(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] },
+      tlds: { allow: ['com', 'net', 'ua'] },
     })
     .optional(),
   phone: Joi.string().optional(),

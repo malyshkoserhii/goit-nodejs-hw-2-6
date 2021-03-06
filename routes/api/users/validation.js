@@ -3,31 +3,31 @@ Joi.objectId = require('joi-objectid')(Joi);
 
 const schemaUserRegistration = Joi.object({
   id: Joi.objectId(),
-  name: Joi.string().min(3).max(30).required(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
       tlds: { allow: ['com', 'net', 'ua'] },
     })
     .optional(),
+  password: Joi.string().required().min(8).max(30),
   subscriprion: Joi.string().optional(),
 });
 
 const schemaUserLogin = Joi.object({
   id: Joi.objectId(),
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ['com', 'net', 'ua'] },
+    })
+    .optional(),
+  password: Joi.string().required().min(8).max(30),
+  subscriprion: Joi.string().optional(),
 });
 
 const schemaUserLogout = Joi.object({
   id: Joi.objectId(),
-  name: Joi.string().alphanum().min(3).max(30).optional(),
-  email: Joi.string()
-    .email({
-      minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] },
-    })
-    .optional(),
-  phone: Joi.string().optional(),
-}).min(1);
+});
 
 const validate = (schema, obj, next) => {
   const { error } = schema.validate(obj);
@@ -41,25 +41,20 @@ const validate = (schema, obj, next) => {
   next();
 };
 
-const createUserValidation = (req, res, next) => {
-  return validate(schemaCreateUser, req.body, next);
+const userRegistrationValidation = (req, res, next) => {
+  return validate(schemaUserRegistration, req.body, next);
 };
 
-const getByIdUserValidation = (req, res, next) => {
-  return validate(schemaGetById, req.body, next);
+const userLoginValidation = (req, res, next) => {
+  return validate(schemaUserLogin, req.body, next);
 };
 
-const updateUserValidation = (req, res, next) => {
-  return validate(schemaUpdateUser, req.body, next);
-};
-
-const removeUserValidation = (req, res, next) => {
-  return validate(schemaDelete, req.body, next);
+const userLogoutValidation = (req, res, next) => {
+  return validate(schemaUserLogout, req.body, next);
 };
 
 module.exports = {
-  createUserValidation,
-  getByIdUserValidation,
-  updateUserValidation,
-  removeUserValidation,
+  userRegistrationValidation,
+  userLoginValidation,
+  userLogoutValidation,
 };

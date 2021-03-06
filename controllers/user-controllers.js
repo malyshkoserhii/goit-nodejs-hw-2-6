@@ -28,7 +28,6 @@ const userRegistrationController = async (req, res, next) => {
       .status(HttpCode.CREATED)
       .type('application/json')
       .json({
-        status: 'success',
         user: {
           email: newUser.email,
           subscription: newUser.subscription,
@@ -73,7 +72,7 @@ const userLogoutController = async (req, res, next) => {
   //     .json({ message: 'Not authorized' });
   // }
 
-  return res.status(HttpCode.NO_CONTENT);
+  return res.status(HttpCode.NO_CONTENT).json({});
 };
 
 module.exports = {

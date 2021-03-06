@@ -1,17 +1,25 @@
 const express = require('express');
 const router = express.Router();
-// const validate = require('./validation');
 const {
   userRegistrationController,
   userLoginController,
   userLogoutController,
 } = require('../../../controllers/user-controllers');
 const guard = require('../../../helpers/guard');
+const {
+  userRegistrationValidation,
+  userLoginValidation,
+  userLogoutValidation,
+} = require('./validation');
 
-router.post('/auth/register', userRegistrationController);
+router.post(
+  '/auth/register',
+  userRegistrationValidation,
+  userRegistrationController
+);
 
-router.post('/auth/login', userLoginController);
+router.post('/auth/login', userLoginValidation, userLoginController);
 
-router.post('/auth/logout', guard, userLogoutController);
+router.post('/auth/logout', guard, userLogoutValidation, userLogoutController);
 
 module.exports = router;
