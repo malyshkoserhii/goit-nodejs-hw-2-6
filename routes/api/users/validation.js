@@ -30,7 +30,7 @@ const schemaUserLogout = Joi.object({
 });
 
 const schemaCurrentUserChecking = Joi.object({
-  token: Joi.string().token().required(),
+  token: Joi.string(),
 });
 
 const schemaUpdateSubscription = Joi.object({

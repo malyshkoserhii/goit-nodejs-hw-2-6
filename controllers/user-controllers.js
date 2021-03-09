@@ -42,7 +42,7 @@ const userLoginController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await Users.findByEmail(email);
-    const isValidPassword = await user.validPassword(password);
+    const isValidPassword = await user?.validPassword(password);
 
     if (!user || !isValidPassword) {
       return res
@@ -79,7 +79,7 @@ const userLogoutController = async (req, res, next) => {
 
 const checkUserByTokenController = async (req, res, next) => {
   try {
-    const { token } = await req.body;
+    const [, token] = await req.get('Authorization').split(' ');
     const user = await Users.checkUserByToken(token);
 
     if (user.token !== token || token === null) {
@@ -92,7 +92,7 @@ const checkUserByTokenController = async (req, res, next) => {
     return res
       .status(HttpCode.OK)
       .type('application/json')
-      .json({ email: user.email, subscription: user.subscription });
+      .json({ user: { email: user.email, subscription: user.subscription } });
   } catch (error) {
     console.log(error);
   }
@@ -101,7 +101,6 @@ const checkUserByTokenController = async (req, res, next) => {
 const updateUserSubscriptionController = async (req, res, next) => {
   try {
     const [, token] = await req.get('Authorization').split(' ');
-    console.log(token);
     const user = await Users.checkUserByToken(token);
     const id = await user.id;
     const subscription = req.body.subscription;
