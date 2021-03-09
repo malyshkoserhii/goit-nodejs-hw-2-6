@@ -63,15 +63,16 @@ const userLoginController = async (req, res, next) => {
 
 const userLogoutController = async (req, res, next) => {
   const id = req.user.id;
-  // const user = await Users.findUserById(userId);
-  await Users.updateToken(id, null);
+  const user = await Users.findUserById(id);
 
-  // if (!user) {
-  //   return res
-  //     .status(HttpCode.UNAUTHORIZED)
-  //     .type('application/json')
-  //     .json({ message: 'Not authorized' });
-  // }
+  if (!user) {
+    return res
+      .status(HttpCode.UNAUTHORIZED)
+      .type('application/json')
+      .json({ message: 'Not authorized' });
+  }
+
+  await Users.updateToken(id, null);
 
   return res.status(HttpCode.NO_CONTENT).json({});
 };
@@ -80,9 +81,8 @@ const checkUserByTokenController = async (req, res, next) => {
   try {
     const { token } = await req.body;
     const user = await Users.checkUserByToken(token);
-    console.log('user', user);
 
-    if (!user) {
+    if (user.token !== token || token === null) {
       return res
         .status(HttpCode.UNAUTHORIZED)
         .type('application/json')
@@ -98,9 +98,36 @@ const checkUserByTokenController = async (req, res, next) => {
   }
 };
 
+const updateUserSubscriptionController = async (req, res, next) => {
+  try {
+    const [, token] = await req.get('Authorization').split(' ');
+    console.log(token);
+    const user = await Users.checkUserByToken(token);
+    const id = await user.id;
+    const subscription = req.body.subscription;
+    const newSubscription = await Users.updateUserSubscription(
+      id,
+      subscription
+    );
+    const updatedSubscritrion = newSubscription.subscription;
+
+    if (!newSubscription) {
+      return res
+        .status(HttpCode.BAD_REQEST)
+        .json({ message: 'Server could not update your subscription' });
+    }
+    return res
+      .status(HttpCode.OK)
+      .json({ user: { email: user.email, subscription: updatedSubscritrion } });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   userRegistrationController,
   userLoginController,
   userLogoutController,
   checkUserByTokenController,
+  updateUserSubscriptionController,
 };

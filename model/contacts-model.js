@@ -9,7 +9,7 @@ const addContact = async (body) => {
   }
 };
 
-const listContacts = async (userId, { page = '1', limit = '5' }) => {
+const listContacts = async (userId, { page = '1', limit = '5', filter }) => {
   try {
     const results = await Contact.paginate(
       { owner: userId },

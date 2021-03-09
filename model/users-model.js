@@ -21,10 +21,24 @@ const checkUserByToken = async (token) => {
   return await User.findOne({ token });
 };
 
+const updateUserSubscription = async (userId, subscription) => {
+  try {
+    const updateSubscription = await User.findByIdAndUpdate(
+      { _id: userId },
+      { subscription },
+      { new: true }
+    );
+    return updateSubscription;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   createUser,
   findUserById,
   findByEmail,
   updateToken,
   checkUserByToken,
+  updateUserSubscription,
 };

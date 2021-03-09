@@ -5,6 +5,7 @@ const {
   userLoginController,
   userLogoutController,
   checkUserByTokenController,
+  updateUserSubscriptionController,
 } = require('../../../controllers/user-controllers');
 const guard = require('../../../helpers/guard');
 const {
@@ -12,6 +13,7 @@ const {
   userLoginValidation,
   userLogoutValidation,
   currentUserCheckingValidation,
+  schemaUpdateSubscriptionValidation,
 } = require('./validation');
 const {
   userRegistrationLimiter,
@@ -32,6 +34,13 @@ router.get(
   '/current',
   currentUserCheckingValidation,
   checkUserByTokenController
+);
+
+router.patch(
+  '/',
+  guard,
+  schemaUpdateSubscriptionValidation,
+  updateUserSubscriptionController
 );
 
 module.exports = router;
