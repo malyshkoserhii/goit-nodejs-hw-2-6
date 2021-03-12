@@ -29,10 +29,6 @@ const schemaUserLogout = Joi.object({
   id: Joi.objectId(),
 });
 
-const schemaCurrentUserChecking = Joi.object({
-  token: Joi.string(),
-});
-
 const schemaUpdateSubscription = Joi.object({
   subscription: Joi.string().valid('free', 'pro', 'premium').required(),
 });
@@ -61,10 +57,6 @@ const userLogoutValidation = (req, res, next) => {
   return validate(schemaUserLogout, req.body, next);
 };
 
-const currentUserCheckingValidation = (req, res, next) => {
-  return validate(schemaCurrentUserChecking, req.body, next);
-};
-
 const schemaUpdateSubscriptionValidation = (req, res, next) => {
   return validate(schemaUpdateSubscription, req.body, next);
 };
@@ -73,6 +65,5 @@ module.exports = {
   userRegistrationValidation,
   userLoginValidation,
   userLogoutValidation,
-  currentUserCheckingValidation,
   schemaUpdateSubscriptionValidation,
 };

@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
-const Users = require('../model/users-model');
+const Users = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
 require('dotenv').config();
 const SECRET_KEY = process.env.JWT_SECRET;
 
-const userRegistrationController = async (req, res, next) => {
+const userRegistration = async (req, res, next) => {
   try {
     const { email } = req.body;
     const user = await Users.findByEmail(email);
@@ -38,7 +38,7 @@ const userRegistrationController = async (req, res, next) => {
   }
 };
 
-const userLoginController = async (req, res, next) => {
+const userLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await Users.findByEmail(email);
@@ -61,7 +61,7 @@ const userLoginController = async (req, res, next) => {
   }
 };
 
-const userLogoutController = async (req, res, next) => {
+const userLogout = async (req, res, next) => {
   const id = req.user.id;
   const user = await Users.findUserById(id);
 
@@ -77,12 +77,11 @@ const userLogoutController = async (req, res, next) => {
   return res.status(HttpCode.NO_CONTENT).json({});
 };
 
-const checkUserByTokenController = async (req, res, next) => {
+const checkUserByToken = async (req, res, next) => {
   try {
-    const [, token] = await req.get('Authorization').split(' ');
-    const user = await Users.checkUserByToken(token);
+    const user = req.user;
 
-    if (user.token !== token || token === null) {
+    if (!user) {
       return res
         .status(HttpCode.UNAUTHORIZED)
         .type('application/json')
@@ -98,11 +97,10 @@ const checkUserByTokenController = async (req, res, next) => {
   }
 };
 
-const updateUserSubscriptionController = async (req, res, next) => {
+const updateUserSubscription = async (req, res, next) => {
   try {
-    const [, token] = await req.get('Authorization').split(' ');
-    const user = await Users.checkUserByToken(token);
-    const id = await user.id;
+    const user = req.user;
+    const id = user.id;
     const subscription = req.body.subscription;
     const newSubscription = await Users.updateUserSubscription(
       id,
@@ -124,9 +122,9 @@ const updateUserSubscriptionController = async (req, res, next) => {
 };
 
 module.exports = {
-  userRegistrationController,
-  userLoginController,
-  userLogoutController,
-  checkUserByTokenController,
-  updateUserSubscriptionController,
+  userRegistration,
+  userLogin,
+  userLogout,
+  checkUserByToken,
+  updateUserSubscription,
 };

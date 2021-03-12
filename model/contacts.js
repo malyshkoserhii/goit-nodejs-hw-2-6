@@ -1,4 +1,4 @@
-const Contact = require('./schemas/contact-schema');
+const Contact = require('./schemas/contact');
 
 const addContact = async (body) => {
   try {
@@ -9,19 +9,20 @@ const addContact = async (body) => {
   }
 };
 
-const listContacts = async (userId, { page = '1', limit = '5', filter }) => {
+const listContacts = async (userId, { page = '1', limit = '5', sub }) => {
+  const options = { owner: userId };
+  if (sub) {
+    options.subscription = { $all: [sub] };
+  }
   try {
-    const results = await Contact.paginate(
-      { owner: userId },
-      {
-        page,
-        limit,
-        populate: {
-          path: 'owner',
-          select: 'email subscription',
-        },
-      }
-    );
+    const results = await Contact.paginate(options, {
+      page,
+      limit,
+      populate: {
+        path: 'owner',
+        select: 'email subscription',
+      },
+    });
     const {
       docs: contacts,
       totalDocs: total,

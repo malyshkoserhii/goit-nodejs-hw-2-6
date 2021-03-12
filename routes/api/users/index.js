@@ -1,18 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const {
-  userRegistrationController,
-  userLoginController,
-  userLogoutController,
-  checkUserByTokenController,
-  updateUserSubscriptionController,
-} = require('../../../controllers/user-controllers');
+  userRegistration,
+  userLogin,
+  userLogout,
+  checkUserByToken,
+  updateUserSubscription,
+} = require('../../../controllers/user');
 const guard = require('../../../helpers/guard');
 const {
   userRegistrationValidation,
   userLoginValidation,
   userLogoutValidation,
-  currentUserCheckingValidation,
   schemaUpdateSubscriptionValidation,
 } = require('./validation');
 const {
@@ -23,24 +22,20 @@ router.post(
   '/auth/register',
   userRegistrationLimiter,
   userRegistrationValidation,
-  userRegistrationController
+  userRegistration
 );
 
-router.post('/auth/login', userLoginValidation, userLoginController);
+router.post('/auth/login', userLoginValidation, userLogin);
 
-router.post('/auth/logout', guard, userLogoutValidation, userLogoutController);
+router.post('/auth/logout', guard, userLogoutValidation, userLogout);
 
-router.get(
-  '/current',
-  currentUserCheckingValidation,
-  checkUserByTokenController
-);
+router.get('/current', guard, checkUserByToken);
 
 router.patch(
   '/',
   guard,
   schemaUpdateSubscriptionValidation,
-  updateUserSubscriptionController
+  updateUserSubscription
 );
 
 module.exports = router;

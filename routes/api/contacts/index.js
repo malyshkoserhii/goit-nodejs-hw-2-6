@@ -7,37 +7,22 @@ const {
   removeUserValidation,
 } = require('./validation');
 const {
-  addContactController,
-  getAllContactsController,
-  getContactByIdController,
-  updateContactController,
-  removeContactController,
-} = require('../../../controllers/contacts-controller');
+  addContact,
+  getAllContacts,
+  getContactById,
+  updateContact,
+  removeContact,
+} = require('../../../controllers/contacts');
 const guard = require('../../../helpers/guard');
 
-router.post('/', guard, createUserValidation, addContactController);
+router.post('/', guard, createUserValidation, addContact);
 
-router.get('/', guard, getAllContactsController);
+router.get('/', guard, getAllContacts);
 
-router.get(
-  '/:contactId',
-  guard,
-  getByIdUserValidation,
-  getContactByIdController
-);
+router.get('/:contactId', guard, getByIdUserValidation, getContactById);
 
-router.patch(
-  '/:contactId',
-  guard,
-  updateUserValidation,
-  updateContactController
-);
+router.patch('/:contactId', guard, updateUserValidation, updateContact);
 
-router.delete(
-  '/:contactId',
-  guard,
-  removeUserValidation,
-  removeContactController
-);
+router.delete('/:contactId', guard, removeUserValidation, removeContact);
 
 module.exports = router;

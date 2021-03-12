@@ -1,7 +1,7 @@
-const Contact = require('../model/contacts-model');
+const Contact = require('../model/contacts');
 const { HttpCode } = require('../helpers/constants');
 
-const addContactController = async (req, res, next) => {
+const addContact = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const contact = await Contact.addContact({ ...req.body, owner: userId });
@@ -16,7 +16,7 @@ const addContactController = async (req, res, next) => {
   }
 };
 
-const getAllContactsController = async (req, res, next) => {
+const getAllContacts = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const contacts = await Contact.listContacts(userId, req.query);
@@ -26,7 +26,7 @@ const getAllContactsController = async (req, res, next) => {
   }
 };
 
-const getContactByIdController = async (req, res, next) => {
+const getContactById = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const contacts = await Contact.getContactById(req.params.contactId, userId);
@@ -36,7 +36,7 @@ const getContactByIdController = async (req, res, next) => {
   }
 };
 
-const updateContactController = async (req, res, next) => {
+const updateContact = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const contact = await Contact.updateContact(
@@ -53,7 +53,7 @@ const updateContactController = async (req, res, next) => {
   }
 };
 
-const removeContactController = async (req, res, next) => {
+const removeContact = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const contact = await Contact.removeContact(req.params.contactId, userId);
@@ -67,9 +67,9 @@ const removeContactController = async (req, res, next) => {
 };
 
 module.exports = {
-  addContactController,
-  getAllContactsController,
-  getContactByIdController,
-  updateContactController,
-  removeContactController,
+  addContact,
+  getAllContacts,
+  getContactById,
+  updateContact,
+  removeContact,
 };
