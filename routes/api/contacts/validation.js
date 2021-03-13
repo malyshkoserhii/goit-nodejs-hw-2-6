@@ -7,10 +7,11 @@ const schemaCreateUser = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] },
+      tlds: { allow: ['com', 'net', 'ua', 'uk'] },
     })
     .optional(),
   phone: Joi.string().required(),
+  subscription: Joi.string().optional(),
 });
 
 const schemaGetById = Joi.object({
@@ -19,14 +20,15 @@ const schemaGetById = Joi.object({
 
 const schemaUpdateUser = Joi.object({
   id: Joi.objectId(),
-  name: Joi.string().alphanum().min(3).max(30).optional(),
+  name: Joi.string().min(3).max(30).optional(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] },
+      tlds: { allow: ['com', 'net', 'ua', 'uk'] },
     })
     .optional(),
   phone: Joi.string().optional(),
+  subscription: Joi.string().default('free').optional(),
 }).min(1);
 
 const schemaDelete = Joi.object({
