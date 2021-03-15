@@ -6,6 +6,7 @@ const {
   userLogout,
   checkUserByToken,
   updateUserSubscription,
+  avatars,
 } = require('../../../controllers/user');
 const guard = require('../../../helpers/guard');
 const {
@@ -17,6 +18,7 @@ const {
 const {
   userRegistrationLimiter,
 } = require('../../../helpers/registration-limit');
+const upload = require('../../../helpers/upload');
 
 router.post(
   '/auth/register',
@@ -37,5 +39,7 @@ router.patch(
   schemaUpdateSubscriptionValidation,
   updateUserSubscription
 );
+
+router.patch('/avatars', guard, upload.single('avatar'), avatars);
 
 module.exports = router;

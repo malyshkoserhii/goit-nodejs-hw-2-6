@@ -1,7 +1,11 @@
+const fs = require('fs').promises;
+const path = require('path');
+const Jimp = require('jimp');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const Users = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
-require('dotenv').config();
+const createFolder = require('../helpers/create-dir');
 const SECRET_KEY = process.env.JWT_SECRET;
 
 const userRegistration = async (req, res, next) => {
@@ -122,10 +126,54 @@ const updateUserSubscription = async (req, res, next) => {
   }
 };
 
+const avatars = async (req, res, next) => {
+  try {
+    const id = req.user.id;
+    const AVATARS_OF_USERS = process.env.AVATARS_OF_USERS;
+    const pathFile = req.file.path;
+    const newNameAvatar = `${Date.now()}-${req.file.originalname}`;
+    const image = await Jimp.read(pathFile);
+    await image
+      .autocrop()
+      .cover(
+        250,
+        250,
+        Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE
+      )
+      .writeAsync(pathFile);
+    await createFolder(path.join(AVATARS_OF_USERS, 'images'));
+    await fs.rename(
+      pathFile,
+      path.join(AVATARS_OF_USERS, 'images', newNameAvatar)
+    );
+    const avatarUrl = path.normalize(path.join(newNameAvatar));
+    try {
+      await fs.unlink(
+        path.join(process.cwd(), AVATARS_OF_USERS, 'images', req.user.avatarURL)
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+    await Users.updateAvatar(id, avatarUrl);
+
+    if (!req.user) {
+      return res
+        .status(HttpCode.UNAUTHORIZED)
+        .type('application/json')
+        .json({ message: 'Not authorized' });
+    }
+
+    return res.status(HttpCode.OK).type('application/json').json({ avatarUrl });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   userRegistration,
   userLogin,
   userLogout,
   checkUserByToken,
   updateUserSubscription,
+  avatars,
 };
