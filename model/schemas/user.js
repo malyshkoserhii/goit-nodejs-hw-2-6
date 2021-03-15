@@ -27,6 +27,9 @@ const userSchema = new Schema(
       required: [true, 'Password is required! Please enter your password'],
       minlength: 5,
     },
+    avatarURL: {
+      type: String,
+    },
     subscription: {
       type: String,
       enum: [Subscription.FREE, Subscription.PRO, Subscription.PREMIUM],
