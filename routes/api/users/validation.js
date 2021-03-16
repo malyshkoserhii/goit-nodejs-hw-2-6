@@ -1,5 +1,6 @@
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
+const { HttpCode } = require('../../../helpers/constants');
 
 const schemaUserRegistration = Joi.object({
   id: Joi.objectId(),
@@ -61,9 +62,19 @@ const schemaUpdateSubscriptionValidation = (req, res, next) => {
   return validate(schemaUpdateSubscription, req.body, next);
 };
 
+const uploadAvatarValidation = (req, res, next) => {
+  if (!req.file) {
+    return res
+      .status(HttpCode.BAD_REQEST)
+      .json({ message: 'Please choose the file to upload' });
+  }
+  next();
+};
+
 module.exports = {
   userRegistrationValidation,
   userLoginValidation,
   userLogoutValidation,
   schemaUpdateSubscriptionValidation,
+  uploadAvatarValidation,
 };

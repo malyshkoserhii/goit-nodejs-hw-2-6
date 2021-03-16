@@ -14,6 +14,7 @@ const {
   userLoginValidation,
   userLogoutValidation,
   schemaUpdateSubscriptionValidation,
+  uploadAvatarValidation,
 } = require('./validation');
 const {
   userRegistrationLimiter,
@@ -40,6 +41,12 @@ router.patch(
   updateUserSubscription
 );
 
-router.patch('/avatars', guard, upload.single('avatar'), avatars);
+router.patch(
+  '/avatars',
+  guard,
+  upload.single('avatar'),
+  uploadAvatarValidation,
+  avatars
+);
 
 module.exports = router;

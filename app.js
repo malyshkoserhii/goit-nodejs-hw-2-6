@@ -11,8 +11,7 @@ require('dotenv').config();
 const app = express();
 
 const AVATARS_OF_USERS = process.env.AVATARS_OF_USERS;
-const qwe = path.join(__dirname, AVATARS_OF_USERS);
-console.log('PATH', qwe);
+
 app.use(express.static(path.join(__dirname, AVATARS_OF_USERS)));
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
