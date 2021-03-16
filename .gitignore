@@ -107,7 +107,9 @@ dist
 youtube.txt
 
 # ignore all public files
-public/*
+public/images*
+# don't ignore keep files
+!.keep
 # ignore all tmp files
 tmp/*
 # don't ignore keep files
