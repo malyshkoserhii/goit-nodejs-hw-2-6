@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
+const gravatar = require('gravatar');
 const {
   Subscription,
   regexpForEmailValidation,
@@ -26,6 +27,12 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'Password is required! Please enter your password'],
       minlength: 5,
+    },
+    avatarURL: {
+      type: String,
+      default: function () {
+        return gravatar.url(this.email, { s: 250 }, true);
+      },
     },
     subscription: {
       type: String,

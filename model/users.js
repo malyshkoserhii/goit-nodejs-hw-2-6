@@ -30,10 +30,15 @@ const updateUserSubscription = async (userId, subscription) => {
   }
 };
 
+const updateAvatar = async (userId, avatarURL) => {
+  return await User.findByIdAndUpdate(userId, { avatarURL });
+};
+
 module.exports = {
   createUser,
   findUserById,
   findByEmail,
   updateToken,
   updateUserSubscription,
+  updateAvatar,
 };

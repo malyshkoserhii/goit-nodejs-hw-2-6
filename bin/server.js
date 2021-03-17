@@ -1,10 +1,15 @@
 const app = require('../app');
 const db = require('../model/db');
-
+const createFolder = require('../helpers/create-dir');
+require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 
 db.then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
+    const UPLOAD_DIRECTORY = process.env.UPLOAD_DIRECTORY;
+    const AVATARS_OF_USERS = process.env.AVATARS_OF_USERS;
+    await createFolder(UPLOAD_DIRECTORY);
+    await createFolder(AVATARS_OF_USERS);
     console.log(`Server running. Use our API on port: ${PORT}`);
   });
 }).catch((err) => {
