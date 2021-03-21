@@ -9,6 +9,7 @@
     "lint:fix": "eslint --fix **/*.{js,json}"
   },
   "dependencies": {
+    "@babel/eslint-parser": "7.13.10",
     "@sendgrid/mail": "^7.4.2",
     "bcryptjs": "^2.4.3",
     "cors": "2.8.5",
@@ -33,6 +34,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-methods": "^7.13.0",
     "eslint": "^7.19.0",
     "eslint-config-prettier": "8.0.0",
     "eslint-config-standard": "^16.0.2",
