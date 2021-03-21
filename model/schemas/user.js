@@ -40,7 +40,7 @@ const userSchema = new Schema(
       default: Subscription.FREE,
     },
     token: { type: String },
-    verify: {
+    verification: {
       type: Boolean,
       default: false,
     },

@@ -7,6 +7,7 @@ const {
   checkUserByToken,
   updateUserSubscription,
   avatars,
+  verification,
 } = require('../../../controllers/user');
 const guard = require('../../../helpers/guard');
 const {
@@ -25,7 +26,7 @@ router.post(
   '/auth/register',
   userRegistrationLimiter,
   userRegistrationValidation,
-  userRegistration
+  userRegistration,
 );
 
 router.post('/auth/login', userLoginValidation, userLogin);
@@ -38,7 +39,7 @@ router.patch(
   '/',
   guard,
   schemaUpdateSubscriptionValidation,
-  updateUserSubscription
+  updateUserSubscription,
 );
 
 router.patch(
@@ -46,7 +47,9 @@ router.patch(
   guard,
   upload.single('avatar'),
   uploadAvatarValidation,
-  avatars
+  avatars,
 );
+
+router.get('/auth/verify/:verificationToken', verification);
 
 module.exports = router;

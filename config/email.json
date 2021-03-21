@@ -1,0 +1,5 @@
+{
+"development": "http://localhost:3000",
+"stage": "https://malser-contacts-stage.heroku.com",
+"production": "https://malser-contacts.heroku.com"
+}

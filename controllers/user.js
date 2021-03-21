@@ -2,15 +2,17 @@ const fs = require('fs').promises;
 const path = require('path');
 const Jimp = require('jimp');
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const Users = require('../model/users');
 const { HttpCode } = require('../helpers/constants');
+const EmailService = require('../service/email');
 const createFolder = require('../helpers/create-dir');
 const SECRET_KEY = process.env.JWT_SECRET;
 
 const userRegistration = async (req, res, next) => {
   try {
-    const { email } = req.body;
+    const { email, name } = req.body;
     const user = await Users.findByEmail(email);
 
     if (user) {
@@ -19,8 +21,14 @@ const userRegistration = async (req, res, next) => {
         .type('application/json')
         .json({ message: 'Email in use' });
     }
-
-    const newUser = await Users.createUser(req.body);
+    const verificationToken = uuidv4();
+    const emailService = new EmailService(process.env.NODE_ENV);
+    await emailService.sendEmail(verificationToken, email, name);
+    const newUser = await Users.createUser({
+      ...req.body,
+      verification: false,
+      verificationToken,
+    });
     if (!newUser) {
       return res
         .status(HttpCode.BAD_REQEST)
@@ -49,7 +57,7 @@ const userLogin = async (req, res, next) => {
     const user = await Users.findByEmail(email);
     const isValidPassword = await user?.validPassword(password);
 
-    if (!user || !isValidPassword) {
+    if (!user || !isValidPassword || !user.verification) {
       return res
         .status(HttpCode.UNAUTHORIZED)
         .type('application/json')
@@ -109,7 +117,7 @@ const updateUserSubscription = async (req, res, next) => {
     const subscription = req.body.subscription;
     const newSubscription = await Users.updateUserSubscription(
       id,
-      subscription
+      subscription,
     );
     const updatedSubscritrion = newSubscription.subscription;
 
@@ -155,17 +163,32 @@ const saveAvatarToStatic = async (req, res, next) => {
   await createFolder(path.join(AVATARS_OF_USERS, 'images'));
   await fs.rename(
     pathFile,
-    path.join(AVATARS_OF_USERS, 'images', newNameAvatar)
+    path.join(AVATARS_OF_USERS, 'images', newNameAvatar),
   );
   const avatarUrl = path.normalize(path.join(newNameAvatar));
   try {
     await fs.unlink(
-      path.join(process.cwd(), AVATARS_OF_USERS, 'images', req.user.avatarURL)
+      path.join(process.cwd(), AVATARS_OF_USERS, 'images', req.user.avatarURL),
     );
   } catch (error) {
     console.log(error.message);
   }
   return avatarUrl;
+};
+
+const verification = async (req, res, next) => {
+  try {
+    const user = Users.findByVerificationToken(req.params.verificationToken);
+    if (!user) {
+      return res.status(HttpCode.NOT_FOUND).json({ message: 'Not Found' });
+    }
+    await Users.updateVerificationToken(user.id, true, null);
+    return res
+      .status(HttpCode.OK)
+      .json({ message: 'Verification is successful' });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {
@@ -175,4 +198,5 @@ module.exports = {
   checkUserByToken,
   updateUserSubscription,
   avatars,
+  verification,
 };
