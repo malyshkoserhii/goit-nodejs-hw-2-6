@@ -178,11 +178,16 @@ const saveAvatarToStatic = async (req, res, next) => {
 
 const verification = async (req, res, next) => {
   try {
-    const user = Users.findByVerificationToken(req.params.verificationToken);
+    const user = await Users.findByVerificationToken(
+      req.params.verificationToken,
+    );
+
     if (!user) {
       return res.status(HttpCode.NOT_FOUND).json({ message: 'Not Found' });
     }
+
     await Users.updateVerificationToken(user.id, true, null);
+
     return res
       .status(HttpCode.OK)
       .json({ message: 'Verification is successful' });
