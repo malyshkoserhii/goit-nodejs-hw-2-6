@@ -62,7 +62,7 @@ class EmailService {
       subject: 'MalSer Contacts Storage. Confrim your email',
       html: emailBody,
     };
-    sgMail.send(msg).then(
+    this.#sender.send(msg).then(
       () => {},
       (error) => {
         console.error(error);
