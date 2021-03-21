@@ -40,8 +40,16 @@ const userSchema = new Schema(
       default: Subscription.FREE,
     },
     token: { type: String },
+    verification: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, 'Veryfication token is required!'],
+    },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false, timestamps: true },
 );
 
 userSchema.pre('save', async function (next) {
